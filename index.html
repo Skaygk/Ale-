@@ -2,21 +2,21 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Animación de partículas</title>
   <style>
     :root{
       --bg:#121212;
       --panel:#181818;
-      --muted: #b3b3b3;
+      --muted:#b3b3b3;
       --accent:#1DB954;
       --white:#ffffff;
     }
-    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
     body{background:var(--bg);color:var(--white);overflow:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
     .frame{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
     canvas{display:block;width:100%;height:100%}
-    .player{position:absolute;left:32px;top:32px;width:340px;max-width:calc(100% - 64px);box-sizing:border-box;background:linear-gradient(180deg,var(--panel),#0f0f0f);border-radius:12px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,0.6);display:flex;gap:12px;align-items:center;z-index:10}
+    .player{position:absolute;left:32px;top:32px;width:340px;max-width:calc(100% - 64px);box-sizing:border-box;background:linear-gradient(180deg,var(--panel),#0f0f0f);border-radius:12px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,0.6);display:flex;gap:12px;align-items:center}
     .cover{width:88px;height:88px;border-radius:6px;background:#222;flex:0 0 88px;object-fit:cover}
     .meta{flex:1;color:var(--white);min-width:0}
     .song{font-weight:700;font-size:16px;margin-bottom:6px;white-space:normal;word-break:break-word}
@@ -31,10 +31,10 @@
       .meta{display:flex;flex-direction:column;min-width:0;overflow:visible}
       .song{font-size:15px;line-height:1.1;margin-bottom:4px}
       .controls{height:30px;display:flex;align-items:center;gap:8px}
-      .controls > div[style]{display:none}
+      .controls>div[style]{display:none}
     }
-    @media (orientation: landscape) and (max-height: 420px){
-      .player{top:auto;bottom:12px;left:12px;right:12px;width:auto;max-width:none}
+    @media(orientation:landscape){
+      .player{display:none}
     }
   </style>
 </head>
@@ -64,31 +64,34 @@
   </div>
   <script>
     (function(){
-      try{ if(window.startAnimation) window.startAnimation(); }catch(e){}
-      const p = document.getElementById('player');
-      const fallback = document.getElementById('playFallback');
-      const btn = document.getElementById('playBtn');
-      if(!p) return;
-      p.volume = 0.36;
-      p.loop = true;
-      let attempts = 0;
+      try{if(window.startAnimation)window.startAnimation()}catch(e){}
+      const p=document.getElementById('player');
+      const fallback=document.getElementById('playFallback');
+      const btn=document.getElementById('playBtn');
+      if(!p)return;
+      p.volume=0.36;
+      p.loop=true;
+      let attempts=0;
       async function tryPlay(){
         attempts++;
         try{
           await p.play();
-          if(fallback) fallback.style.display = 'none';
+          if(fallback)fallback.style.display='none';
           return true;
         }catch(e){
-          if(attempts >= 4 && fallback) fallback.style.display = 'flex';
+          if(attempts>=4&&fallback)fallback.style.display='flex';
           return false;
         }
       }
-      window.addEventListener('load', ()=>{ tryPlay(); setTimeout(tryPlay,300); setTimeout(tryPlay,1000); setTimeout(tryPlay,2000); });
-      document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'visible') tryPlay(); });
-      function onGesture(){ tryPlay(); document.removeEventListener('click', onGesture); document.removeEventListener('touchstart', onGesture); }
-      document.addEventListener('click', onGesture, {passive:true});
-      document.addEventListener('touchstart', onGesture, {passive:true});
-      if(btn){ btn.addEventListener('click', async ()=>{ await p.play().catch(()=>{}); fallback.style.display='none'; }); }
+      window.addEventListener('load',()=>{tryPlay();setTimeout(tryPlay,300);setTimeout(tryPlay,1000);setTimeout(tryPlay,2000)});
+      document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')tryPlay()});
+      function onGesture(){tryPlay();document.removeEventListener('click',onGesture);document.removeEventListener('touchstart',onGesture)}
+      document.addEventListener('click',onGesture,{passive:true});
+      document.addEventListener('touchstart',onGesture,{passive:true});
+      if(btn){btn.addEventListener('click',async()=>{await p.play().catch(()=>{});fallback.style.display='none'})}
+      if(/Mobi|Android/i.test(navigator.userAgent)&&screen.orientation&&screen.orientation.lock){
+        screen.orientation.lock('landscape').catch(()=>{});
+      }
     })();
   </script>
 </body>
