@@ -45,18 +45,44 @@
 <div style="flex:1;height:8px;background:rgba(255,255,255,0.06);border-radius:4px"></div>
   <div style="width:36px;text-align:right;color:var(--muted);font-size:12px">3:21</div>
     </div>
-  <div class="player-note">Decorative player — using <code>thewknd.mp3</code> and <code>waos.png</code> (same folder)</div>
+  <div class="player-note"><code>thewknd.mp3</code> y <code>waos.png</code></div>
 </div>
   </div>
 <div class="attribution">edit by you — polished</div>
 </div>
 <audio id="player" src="thewknd.mp3" preload="auto" autoplay playsinline></audio>
  <script src="ale.js"></script>
+  <div id="playFallback" style="position:fixed;left:0;top:0;right:0;bottom:0;display:none;align-items:center;justify-content:center;z-index:50;pointer-events:auto">
+    <button id="playBtn" style="background:var(--panel);color:var(--white);border-radius:12px;padding:12px 18px;border:none;box-shadow:0 8px 24px rgba(0,0,0,0.6);font-weight:700">Tocar audio</button>
+  </div>
   <script>
-      (function(){      try{ if(window.startAnimation) window.startAnimation(); }catch(e){}
-        const p = document.getElementById('player');
-        if(p){ p.volume = 0.36; p.loop = true; const tryPlay = ()=>{ p.play().catch(()=>{}); }; window.addEventListener('load', tryPlay); setTimeout(tryPlay, 300); }
-      })();
-    </script>
+    (function(){
+      try{ if(window.startAnimation) window.startAnimation(); }catch(e){}
+      const p = document.getElementById('player');
+      const fallback = document.getElementById('playFallback');
+      const btn = document.getElementById('playBtn');
+      if(!p) return;
+      p.volume = 0.36;
+      p.loop = true;
+      let attempts = 0;
+      async function tryPlay(){
+        attempts++;
+        try{
+          await p.play();
+          if(fallback) fallback.style.display = 'none';
+          return true;
+        }catch(e){
+          if(attempts >= 4 && fallback) fallback.style.display = 'flex';
+          return false;
+        }
+      }
+      window.addEventListener('load', ()=>{ tryPlay(); setTimeout(tryPlay,300); setTimeout(tryPlay,1000); setTimeout(tryPlay,2000); });
+      document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'visible') tryPlay(); });
+      function onGesture(){ tryPlay(); document.removeEventListener('click', onGesture); document.removeEventListener('touchstart', onGesture); }
+      document.addEventListener('click', onGesture, {passive:true});
+      document.addEventListener('touchstart', onGesture, {passive:true});
+      if(btn){ btn.addEventListener('click', async ()=>{ await p.play().catch(()=>{}); fallback.style.display='none'; }); }
+    })();
+  </script>
 </body>
 </html>
