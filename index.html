@@ -5,17 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Animación de frases</title>
 <style>
-:root{
-  --bg:#121212;
-  --panel:#181818;
-  --muted:#b3b3b3;
-  --accent:#1DB954;
-  --white:#ffffff;
-}
+:root{--bg:#121212;--panel:#181818;--muted:#b3b3b3;--accent:#1DB954;--white:#ffffff}
 html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
 body{background:var(--bg);color:var(--white);overflow:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .frame{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
-canvas{display:block;width:100%;height:100%}
 .player{position:absolute;left:32px;top:32px;width:340px;max-width:calc(100% - 64px);box-sizing:border-box;background:linear-gradient(180deg,var(--panel),#0f0f0f);border-radius:12px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,0.6);display:flex;gap:12px;align-items:center}
 .cover{width:88px;height:88px;border-radius:6px;background:#222;flex:0 0 88px;object-fit:cover}
 .meta{flex:1;color:var(--white);min-width:0}
@@ -25,24 +18,22 @@ canvas{display:block;width:100%;height:100%}
 .play-dot{width:10px;height:10px;background:var(--accent);border-radius:50%}
 .attribution{position:absolute;right:18px;bottom:16px;color:rgba(255,255,255,0.06);font-size:12px}
 .player-note{font-size:11px;color:var(--muted);margin-top:8px}
-.letter-container{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;flex-wrap:wrap;justify-content:center;font-size:5vw;text-align:center;}
+.letter-container{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;flex-wrap:wrap;justify-content:center;font-size:5vw;text-align:center;pointer-events:none}
 .letter{opacity:0;position:relative;display:inline-block;transition:all 0.8s ease;}
 .visible{opacity:1;transform:translate(0,0);}
 @media(max-width:520px){
-  .player{left:12px;right:12px;top:auto;bottom:12px;width:auto;padding:10px;border-radius:10px}
-  .cover{width:64px;height:64px;flex:0 0 64px}
-  .meta{display:flex;flex-direction:column;min-width:0;overflow:visible}
-  .song{font-size:15px;line-height:1.1;margin-bottom:4px}
-  .controls{height:30px;display:flex;align-items:center;gap:8px}
-  .controls > div[style]{display:none}
+.player{left:12px;right:12px;top:auto;bottom:12px;width:auto;padding:10px;border-radius:10px}
+.cover{width:64px;height:64px;flex:0 0 64px}
+.meta{display:flex;flex-direction:column;min-width:0;overflow:visible}
+.song{font-size:15px;line-height:1.1;margin-bottom:4px}
+.controls{height:30px;display:flex;align-items:center;gap:8px}
+.controls > div[style]{display:none}
 }
 </style>
 </head>
 <body>
 <div class="frame">
-  <canvas id="canvas"></canvas>
-  <img id="bgImage" src="" alt="" style="display:none">
-  <div class="player" aria-hidden="true" id="playerUI">
+  <div class="player" aria-hidden="true">
     <img id="cover" class="cover" src="waos.png" alt="cover">
     <div class="meta">
       <div class="song" id="songTitle">call out my name</div>
@@ -62,27 +53,22 @@ canvas{display:block;width:100%;height:100%}
 <div id="playFallback" style="position:fixed;left:0;top:0;right:0;bottom:0;display:none;align-items:center;justify-content:center;z-index:50;pointer-events:auto">
   <button id="playBtn" style="background:var(--panel);color:var(--white);border-radius:12px;padding:12px 18px;border:none;box-shadow:0 8px 24px rgba(0,0,0,0.6);font-weight:700">Tocar audio</button>
 </div>
-<script src="ale.js"></script>
 <script>
-const frases=[
-  "Call out my name",
-  "And I'll be on my way",
-  "When times are rough",
-  "I want you to stay"
-];
-let idx=0;
-const container=document.getElementById('letterContainer');
+const frases = ['ale','Te quiero :>',"eres perfecta","como los tiros de jordan","eres como","una ecuacion diferencial","tan dificil de entender","pero tan hermosa al resolver","y tan dulce","como la voz de the weeknd",":>","tremenda desvelada me pegue XD"];
+let idx = 0;
+const container = document.getElementById('letterContainer');
+
 function mostrarFrase(){
-  container.innerHTML="";
-  const frase=frases[idx];
-  const letters=[];
+  container.innerHTML = '';
+  const frase = frases[idx];
+  const letters = [];
   for(let i=0;i<frase.length;i++){
-    const span=document.createElement('span');
-    span.className="letter";
-    span.textContent=frase[i];
-    const x=(Math.random()*200-100);
-    const y=(Math.random()*200-100);
-    span.style.transform=`translate(${x}px,${y}px)`;
+    const span = document.createElement('span');
+    span.className = 'letter';
+    span.textContent = frase[i];
+    const x = (Math.random()*200-100);
+    const y = (Math.random()*200-100);
+    span.style.transform = `translate(${x}px,${y}px)`;
     container.appendChild(span);
     letters.push(span);
   }
@@ -93,20 +79,11 @@ function mostrarFrase(){
     letters.forEach((l,i)=>{
       setTimeout(()=>{l.classList.remove('visible');},100*i);
     });
-    idx=(idx+1)%frases.length;
+    idx = (idx+1) % frases.length;
     setTimeout(mostrarFrase,1500);
   },3000 + frase.length*100);
 }
 document.addEventListener('DOMContentLoaded',mostrarFrase);
-
-const playerUI=document.getElementById('playerUI');
-function checkOrientation(){
-  if(window.innerWidth>window.innerHeight){playerUI.style.opacity='0';}
-  else{playerUI.style.opacity='1';}
-}
-window.addEventListener('resize',checkOrientation);
-window.addEventListener('orientationchange',checkOrientation);
-document.addEventListener('DOMContentLoaded',checkOrientation);
 
 const p=document.getElementById('player');
 const fallback=document.getElementById('playFallback');
