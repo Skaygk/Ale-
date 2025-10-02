@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Texto animado letras</title>
+<title>Texto animado con reproductor</title>
 <style>
   body{margin:0;height:100vh;display:flex;align-items:center;justify-content:center;background:#121212;color:#fff;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;overflow:hidden;}
   #text-container{display:flex;flex-wrap:wrap;justify-content:center;font-size:5vw;max-width:90%;position:relative;}
@@ -42,13 +42,7 @@
 </div>
 
 <script>
-const frases=[
-  "Call out my name",
-  "And I'll be on my way",
-  "When times are rough",
-  "I want you to stay"
-];
-
+const frases=["Call out my name","And I'll be on my way","When times are rough","I want you to stay"];
 let idx=0;
 const container=document.getElementById('text-container');
 
@@ -76,7 +70,7 @@ function mostrarFrase(){
     setTimeout(mostrarFrase,1000+frase.length*50);
   },3000);
 }
-mostrarFrase();
+document.addEventListener('DOMContentLoaded',mostrarFrase);
 
 const playerUI=document.getElementById('playerUI');
 function checkOrientation(){
