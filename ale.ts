@@ -144,7 +144,7 @@ function step(time?: number) {
 	if (!time) time = performance.now();
 	const dt = lastTime ? (time - lastTime) / 1000 : 0.016;
 	lastTime = time;
-	ctx.clearRect(0, 0, W, H);
+	ctx.clearRect(0, 0, cssW, cssH);
 	drawBackground();
 		formationTimer += dt * 1.2 * speedFactor;
 		const attractionStrength = Math.min(1.6 * speedFactor, formationTimer);
