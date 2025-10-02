@@ -137,17 +137,7 @@ function drawBackground() {
 	grd.addColorStop(1, 'rgba(10,10,10,0.6)');
 	ctx.fillStyle = grd;
 	ctx.fillRect(0,0,cssW,cssH);
-	const img = document.getElementById('bgImage') as HTMLImageElement | null;
-	if (img && img.complete && img.naturalWidth) {
-		const iw = img.naturalWidth;
-		const ih = img.naturalHeight;
-		const scale = Math.min(cssW * 0.6 / iw, cssH * 0.6 / ih, 1);
-		const dw = iw * scale;
-		const dh = ih * scale;
-		ctx.globalAlpha = 0.94;
-		ctx.drawImage(img, (cssW - dw) / 2, (cssH - dh) / 2, dw, dh);
-		ctx.globalAlpha = 1;
-	}
+	// no central background image drawn (cover image displayed only in the player)
 }
 
 function step(time?: number) {
