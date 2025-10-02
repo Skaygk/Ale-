@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Animación de frases</title>
+<title>Animación de frases con fade</title>
 <style>
 :root{--bg:#121212;--panel:#181818;--muted:#b3b3b3;--accent:#1DB954;--white:#ffffff}
 html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
@@ -18,8 +18,7 @@ body{background:var(--bg);color:var(--white);overflow:hidden;-webkit-font-smooth
 .play-dot{width:10px;height:10px;background:var(--accent);border-radius:50%}
 .attribution{position:absolute;right:18px;bottom:16px;color:rgba(255,255,255,0.06);font-size:12px}
 .player-note{font-size:11px;color:var(--muted);margin-top:8px}
-.phrase-container{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;font-size:5vw;opacity:0;transition:opacity 1.2s ease;}
-.visible{opacity:1;}
+.phrase-container{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;font-size:5vw;opacity:0;transition:opacity 1s ease;}
 @media(max-width:520px){
 .player{left:12px;right:12px;top:auto;bottom:12px;width:auto;padding:10px;border-radius:10px}
 .cover{width:64px;height:64px;flex:0 0 64px}
@@ -59,11 +58,13 @@ let idx = 0;
 const container = document.getElementById('phraseContainer');
 
 function mostrarFrase(){
-  container.textContent = frases[idx];
-  container.classList.remove('visible');
-  setTimeout(()=>{container.classList.add('visible');},50);
-  idx = (idx+1) % frases.length;
-  setTimeout(mostrarFrase,4000);
+  container.style.opacity = 0;
+  setTimeout(()=>{
+    container.textContent = frases[idx];
+    container.style.opacity = 1;
+    idx = (idx+1) % frases.length;
+    setTimeout(mostrarFrase,3000);
+  },1000);
 }
 document.addEventListener('DOMContentLoaded',mostrarFrase);
 
